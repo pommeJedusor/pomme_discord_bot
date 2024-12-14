@@ -16,7 +16,9 @@ if BOT_TOKEN is None:
     print("Please set the token")
     exit()
 
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix="!", intents=intents)
 
 
 def startup():
