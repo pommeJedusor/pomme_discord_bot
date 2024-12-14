@@ -1,5 +1,16 @@
 ## Set-Up
 
+### Discord Bot
+to get the token:
+
+`app > Bot > Reset token`
+
+Important! set
+
+`app > Bot > Privileged Gateway Intents > Message Content Intent > true`
+
+otherwise it might not work properly
+
 ### Dev
 copy the .env.ini file and rename it .env
 ```bash
