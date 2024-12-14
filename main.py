@@ -1,13 +1,20 @@
 # modules discords
+import os
+from typing import cast
 import discord
 from discord.ext import commands, tasks
-
-# modules cogs
-from datas import datas
 
 # models
 from model.EpicGamesGames import EpicGamesGames
 from model.EpicGamesServer import EpicGamesServer
+
+from dotenv import load_dotenv
+
+load_dotenv()
+BOT_TOKEN = cast(str, os.getenv("TOKEN"))
+if BOT_TOKEN is None:
+    print("Please set the token")
+    exit()
 
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
@@ -68,4 +75,4 @@ async def general_check() -> None:
 
 
 startup()
-bot.run(datas.BOT_TOKEN)
+bot.run(BOT_TOKEN)

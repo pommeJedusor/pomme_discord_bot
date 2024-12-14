@@ -1,7 +1,10 @@
-import sqlite3, requests, json
+import sqlite3, requests, json, os
 from typing import List, Self
 
-from datas.datas import DATABASE
+from dotenv import load_dotenv
+
+load_dotenv()
+DATABASE = os.getenv("DATABASE") or "database.db"
 
 
 class EpicGamesGames:

@@ -1,0 +1,17 @@
+# docker
+Dockerfile
+.dockerignore
+
+# git
+.git
+.gitignore
+README.md
+
+# python
+datas/
+data
+database.db
+.env
+.env.ini
+.venv/
+**/__pycache__/

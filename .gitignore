@@ -1,5 +1,7 @@
 *.db
 __pycache__
-datas/datas.py
+datas
+data
+database.db
 .env
 .venv
