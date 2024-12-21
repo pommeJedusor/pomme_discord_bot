@@ -38,7 +38,7 @@ class Help(commands.Cog):
             description=description,
             color=color,
         )
-        await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @help.error
     async def help_error(self, interaction: discord.Interaction, error):
