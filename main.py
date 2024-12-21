@@ -30,6 +30,7 @@ def startup():
 async def on_ready():
     try:
         await bot.load_extension("cogs.epicgames.epicgames")
+        await bot.load_extension("cogs.help.help")
         synced = await bot.tree.sync()
         print(f"synced {len(synced) } command(s)")
     except Exception as e:
