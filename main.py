@@ -69,12 +69,19 @@ async def epic_check() -> None:
             assert serv.role_id != None
             await epic_channel.send(f"<@&{serv.role_id}>")
         for new_game in new_free_games:
+            title = new_game.title
             # sometimes the description of the game is also the title
-            if new_game.title == new_game.description:
-                await epic_channel.send(new_game.title)
-            else:
-                await epic_channel.send(new_game.title + "\n" + new_game.description)
-            await epic_channel.send(new_game.img_link)
+            description = ""
+            if new_game.title != new_game.description:
+                description = new_game.description
+
+            embed = discord.Embed(
+                title=title,
+                description=description,
+                color=0x0000FF,
+            )
+            embed.set_image(url=new_game.img_link)
+            await epic_channel.send(embed=embed)
 
     EpicGamesGames.unlast_all()
     EpicGamesGames.add_games(new_free_games_title)
