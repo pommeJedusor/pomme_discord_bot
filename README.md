@@ -1,6 +1,11 @@
-## Set-Up
+## Get the bot on your sever
+for that you just have to follow that [link](https://discord.com/oauth2/authorize?client_id=1317513322051932270&permissions=0&integration_type=0&scope=bot)
+and choose the server you want.
+don't forget you must have enough permissions inside that server
 
-### Discord Bot
+## Run the bot yourself
+
+### Developper portal
 to get the token:
 
 `app > Bot > Reset token`
@@ -49,10 +54,8 @@ docker run -d -e DATABASE=db/database.db -e TOKEN=INSERT_YOUR_TOKEN_HERE -v ./da
 ```
 
 #### pull the image
-then create a volume and run it
+simply run it
 ```bash
-# pull the image from the docker hub
-docker pull pommejedusor/pomme_discord_bot
 # don't forget to change the token
 docker run -d  DATABASE=db/database.db -e TOKEN=INSERT_YOUR_TOKEN_HERE -v ./data:/app/db pommejedusor/pomme_discord_bot
 ```
