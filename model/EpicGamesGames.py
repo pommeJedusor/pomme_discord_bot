@@ -37,26 +37,30 @@ class EpicGamesGames:
         cursor.close()
 
     @staticmethod
-    def add_game(name: str, is_last: bool = True) -> None:
+    def add_games(names: List[str], is_last: bool = True) -> None:
         connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
+        games = [(None, name, is_last) for name in names]
+        paramaters = [x for game in games for x in game]
+
+        sql_parameters = ",".join(["(?,?,?)" for _ in names])
         cursor.execute(
-            "INSERT OR IGNORE INTO `epic_games_games` (`id`, `name`, `is_last`) VALUES(?,?,?)",
-            (None, name, is_last),
+            f"INSERT OR IGNORE INTO `epic_games_games` (`id`, `name`, `is_last`) VALUES{sql_parameters}",
+            (*paramaters,),
         )
         connection.commit()
 
         cursor.close()
 
     @staticmethod
-    def set_game_as_last(name: str) -> None:
+    def set_games_as_last(names: List[str]) -> None:
         connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
-        cursor.execute(
-            "UPDATE `epic_games_games` SET `is_last` = 1 WHERE `name` = ?", (name,)
-        )
+        sql_parameters = "(" + ",".join(["?" for _ in names]) + ")"
+        query = f"UPDATE `epic_games_games` SET `is_last` = 1 WHERE `name` IN {sql_parameters}"
+        cursor.execute(query, (*names,))
         connection.commit()
 
         cursor.close()

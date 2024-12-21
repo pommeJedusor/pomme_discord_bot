@@ -76,10 +76,8 @@ async def epic_check() -> None:
             await epic_channel.send(new_game.img_link)
 
     EpicGamesGames.unlast_all()
-    for game in new_free_games_title:
-        EpicGamesGames.add_game(game)
-    for game in new_free_games_title:
-        EpicGamesGames.set_game_as_last(game)
+    EpicGamesGames.add_games(new_free_games_title)
+    EpicGamesGames.set_games_as_last(new_free_games_title)
 
 
 @tasks.loop(hours=1)
