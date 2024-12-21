@@ -61,7 +61,11 @@ async def epic_check() -> None:
             assert serv.role_id != None
             await epic_channel.send(f"<@&{serv.role_id}>")
         for new_game in new_free_games:
-            await epic_channel.send(new_game.title + "\n" + new_game.description)
+            # sometimes the description of the game is also the title
+            if new_game.title == new_game.description:
+                await epic_channel.send(new_game.title)
+            else:
+                await epic_channel.send(new_game.title + "\n" + new_game.description)
             await epic_channel.send(new_game.img_link)
 
     EpicGamesGames.unlast_all()
