@@ -57,9 +57,7 @@ class EpicGames(commands.Cog):
 
     @epicgames_set_channel.error
     @epicgames_set_role.error
-    async def epicgames_set_channel_error(
-        self, interaction: discord.Interaction, error
-    ):
+    async def epicgames_error(self, interaction: discord.Interaction, error):
         if isinstance(error, MissingPermissions):
             await interaction.response.send_message(
                 "vous n'avez pas les permissions requises"
