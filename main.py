@@ -54,15 +54,17 @@ async def epic_check() -> None:
     if not new_free_games:
         return
 
+    servers_to_mention = EpicGamesServer.get_servers_to_mention(
+        [server.id for server in EpicGamesServer.get_valid_servers()],
+        new_free_games_title,
+    )
     for serv in EpicGamesServer.get_valid_servers():
         assert serv.channel_id != None
         epic_channel = bot.get_channel(serv.channel_id)
         if not isinstance(epic_channel, discord.TextChannel):
-            print(f"server channel {serv.channel_id} is not a textchannel")
             continue
 
-        must_mention = serv.must_mention(new_free_games_title)
-        if must_mention:
+        if serv.id in servers_to_mention and serv.role_id:
             assert serv.role_id != None
             await epic_channel.send(f"<@&{serv.role_id}>")
         for new_game in new_free_games:

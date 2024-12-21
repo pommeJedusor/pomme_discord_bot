@@ -36,25 +36,22 @@ class EpicGamesServer:
 
         cursor.close()
 
-    def must_mention(self, games: List[str]) -> bool:
-        if not self.id or not self.role_id:
-            return False
-        server_id: int = int(self.id)
+    @staticmethod
+    def get_servers_to_mention(servers: List[int], games: List[str]) -> set[int]:
         connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
-        for game in games:
-            cursor.execute(
-                "SELECT true FROM `epic_games_server_has_seen_game` WHERE `game_name` == ? AND `server_id` == ?",
-                (game, server_id),
-            )
-            result = cursor.fetchall()
-            if not result:
-                cursor.close()
-                return True
-
+        game_parameters_sql = "(" + (",".join(["?" for _ in games])) + ")"
+        server_parameters_sql = "(" + (",".join(["?" for _ in servers])) + ")"
+        query = f"SELECT `server_id`, COUNT(*) FROM `epic_games_server_has_seen_game` WHERE `server_id` IN {server_parameters_sql} AND `game_name` IN {game_parameters_sql} GROUP BY `server_id`"
+        cursor.execute(query, (*servers, *games))
+        results = cursor.fetchall()
         cursor.close()
-        return False
+
+        servers_set = set(servers)
+        for result in filter(lambda x: x[1] == len(games), results):
+            servers_set.remove(result[0])
+        return servers_set
 
     @staticmethod
     def set_channel_id(server_id: int, channel_id: int):
