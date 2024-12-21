@@ -1,10 +1,7 @@
-import sqlite3, requests, json, os
+import requests, json
 from typing import List, Self
 
-from dotenv import load_dotenv
-
-load_dotenv()
-DATABASE = os.getenv("DATABASE") or "database.db"
+from model.Connection import DbConnection
 
 
 class EpicGamesGames:
@@ -15,14 +12,13 @@ class EpicGamesGames:
 
     @staticmethod
     def get_last_games() -> list[str]:
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute("SELECT `name` FROM `epic_games_games` WHERE `is_last` = 1")
         games = cursor.fetchall()
 
         cursor.close()
-        connection.close()
         return [game[0] for game in games]
 
     @staticmethod
@@ -30,7 +26,7 @@ class EpicGamesGames:
         """
         deactivate is_last for all games
         """
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -39,11 +35,10 @@ class EpicGamesGames:
         connection.commit()
 
         cursor.close()
-        connection.close()
 
     @staticmethod
     def add_game(name: str, is_last: bool = True) -> None:
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -53,11 +48,10 @@ class EpicGamesGames:
         connection.commit()
 
         cursor.close()
-        connection.close()
 
     @staticmethod
     def set_game_as_last(name: str) -> None:
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -66,7 +60,6 @@ class EpicGamesGames:
         connection.commit()
 
         cursor.close()
-        connection.close()
 
     @classmethod
     def scrap_free_games(cls) -> List[Self]:
@@ -99,8 +92,8 @@ class EpicGamesGames:
 
     @staticmethod
     def init():
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+        connection = DbConnection.get_connection()
+        cursor = connection.cursor()
         sql = """
             CREATE TABLE IF NOT EXISTS epic_games_games (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,7 +102,6 @@ class EpicGamesGames:
             );
         """
         cursor.execute(sql)
-        conn.commit()
+        connection.commit()
 
         cursor.close()
-        conn.close()

@@ -1,10 +1,6 @@
-import sqlite3, os
 from typing import List, Optional, Self
 
-from dotenv import load_dotenv
-
-load_dotenv()
-DATABASE = os.getenv("DATABASE") or "database.db"
+from model.Connection import DbConnection
 
 
 class EpicGamesServer:
@@ -17,7 +13,7 @@ class EpicGamesServer:
 
     @classmethod
     def get_valid_servers(cls) -> List[Self]:
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -26,12 +22,11 @@ class EpicGamesServer:
         games = cursor.fetchall()
 
         cursor.close()
-        connection.close()
         return [cls(game[0], game[1], game[2]) for game in games]
 
     @classmethod
     def insert_server(cls, server_id: int) -> None:
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -40,13 +35,12 @@ class EpicGamesServer:
         connection.commit()
 
         cursor.close()
-        connection.close()
 
     def must_mention(self, games: List[str]) -> bool:
         if not self.id or not self.role_id:
             return False
         server_id: int = int(self.id)
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         for game in games:
@@ -55,19 +49,16 @@ class EpicGamesServer:
                 (game, server_id),
             )
             result = cursor.fetchall()
-            print(result)
             if not result:
                 cursor.close()
-                connection.close()
                 return True
 
         cursor.close()
-        connection.close()
         return False
 
     @staticmethod
     def set_channel_id(server_id: int, channel_id: int):
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -77,11 +68,10 @@ class EpicGamesServer:
         connection.commit()
 
         cursor.close()
-        connection.close()
 
     @staticmethod
     def set_role_id(server_id: int, role_id: int):
-        connection = sqlite3.connect(DATABASE)
+        connection = DbConnection.get_connection()
         cursor = connection.cursor()
 
         cursor.execute(
@@ -91,12 +81,11 @@ class EpicGamesServer:
         connection.commit()
 
         cursor.close()
-        connection.close()
 
     @staticmethod
     def init():
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+        connection = DbConnection.get_connection()
+        cursor = connection.cursor()
         sql = """
             CREATE TABLE IF NOT EXISTS epic_games_server_has_seen_game (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,7 +95,7 @@ class EpicGamesServer:
             );
         """
         cursor.execute(sql)
-        conn.commit()
+        connection.commit()
 
         sql = """
             CREATE TABLE IF NOT EXISTS epic_games_server (
@@ -117,7 +106,6 @@ class EpicGamesServer:
             );
         """
         cursor.execute(sql)
-        conn.commit()
+        connection.commit()
 
         cursor.close()
-        conn.close()
