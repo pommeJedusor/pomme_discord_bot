@@ -67,7 +67,10 @@ async def epic_check() -> None:
 
         if serv.id in servers_to_mention and serv.role_id:
             assert serv.role_id != None
-            await epic_channel.send(f"<@&{serv.role_id}>")
+            try:
+                await epic_channel.send(f"<@&{serv.role_id}>")
+            except discord.errors.Forbidden:
+                pass
         for new_game in new_free_games:
             title = new_game.title
             # sometimes the description of the game is also the title
@@ -81,7 +84,10 @@ async def epic_check() -> None:
                 color=0x0000FF,
             )
             embed.set_image(url=new_game.img_link)
-            await epic_channel.send(embed=embed)
+            try:
+                await epic_channel.send(embed=embed)
+            except discord.errors.Forbidden:
+                pass
 
     EpicGamesGames.unlast_all()
     EpicGamesGames.add_games(new_free_games_title)
