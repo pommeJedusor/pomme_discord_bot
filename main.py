@@ -79,7 +79,7 @@ async def epic_check() -> None:
                 title=title,
                 description=description,
                 color=0x0000FF,
-                url=f"https://store.epicgames.com/en-US/p/{new_game.slug}",
+                url=f"https://store.epicgames.com/fr/p/{new_game.slug}",
             )
             embed.set_image(url=new_game.img_link)
             await epic_channel.send(embed=embed)
