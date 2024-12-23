@@ -1,5 +1,5 @@
 ## Get the bot on your sever
-for that you just have to follow that [link](https://discord.com/oauth2/authorize?client_id=1317513322051932270&permissions=0&integration_type=0&scope=bot)
+for that you just have to follow that [link](https://discord.com/oauth2/authorize?client_id=1317513322051932270&permissions=19456&integration_type=0&scope=bot)
 and choose the server you want.
 don't forget you must have enough permissions inside that server
 
