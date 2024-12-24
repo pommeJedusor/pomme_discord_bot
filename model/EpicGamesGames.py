@@ -5,10 +5,11 @@ from model.Connection import DbConnection
 
 
 class EpicGamesGames:
-    def __init__(self, title: str, description: str, img_link: str) -> None:
+    def __init__(self, title: str, description: str, img_link: str, slug: str) -> None:
         self.title = title
         self.description = description
         self.img_link = img_link
+        self.slug = slug
 
     @staticmethod
     def get_last_games() -> list[str]:
@@ -88,6 +89,7 @@ class EpicGamesGames:
                 x["title"],
                 x["description"],
                 x["keyImages"][0]["url"],
+                x["productSlug"],
             ),
             free_games,
         )
