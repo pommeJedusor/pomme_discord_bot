@@ -96,7 +96,7 @@ async def epic_check() -> None:
     EpicGamesGames.set_games_as_last(new_free_games_title)
 
 
-times = [time(hour=i, tzinfo=timezone.utc) for i in range(24)]
+times = [time(hour=i, minute=1, tzinfo=timezone.utc) for i in range(24)]
 @tasks.loop(time=times)
 async def general_check() -> None:
     await epic_check()
