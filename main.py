@@ -1,4 +1,5 @@
 # modules discords
+from datetime import time, timezone
 import os
 from typing import cast
 import discord
@@ -95,7 +96,8 @@ async def epic_check() -> None:
     EpicGamesGames.set_games_as_last(new_free_games_title)
 
 
-@tasks.loop(hours=1)
+times = [time(hour=i, tzinfo=timezone.utc) for i in range(24)]
+@tasks.loop(time=times)
 async def general_check() -> None:
     await epic_check()
 
