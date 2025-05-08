@@ -2,6 +2,22 @@ import requests, json
 from typing import List, Self
 
 from model.Connection import DbConnection
+from model.HttpRequest import HttpRequest
+
+def get_element_slug(element):
+    try:
+        slug = element["catalogNs"]["mappings"][0]["pageSlug"]
+        if slug:
+            return slug
+    except:
+        pass
+    try:
+        slug = element["offerMappings"][0]["pageSlug"]
+        if slug:
+            return slug
+    except:
+        pass
+    return element["productSlug"]
 
 
 class EpicGamesGames:
@@ -75,6 +91,7 @@ class EpicGamesGames:
             raise Exception(
                 f"error during reception of the datas from epiceGames : {r.headers}"
             )
+        HttpRequest.insert_http_request(r.text)
 
         free_games = []
         elements = json.loads(r.content)["data"]["Catalog"]["searchStore"]["elements"]
@@ -89,7 +106,7 @@ class EpicGamesGames:
                 x["title"],
                 x["description"],
                 x["keyImages"][0]["url"],
-                x["productSlug"],
+                get_element_slug(x),
             ),
             free_games,
         )

@@ -8,6 +8,7 @@ from discord.ext import commands, tasks
 # models
 from model.EpicGamesGames import EpicGamesGames
 from model.EpicGamesServer import EpicGamesServer
+from model.HttpRequest import HttpRequest
 
 from dotenv import load_dotenv
 
@@ -25,6 +26,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 def startup():
     EpicGamesServer.init()
     EpicGamesGames.init()
+    HttpRequest.init()
 
 
 @bot.event
