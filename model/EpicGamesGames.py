@@ -83,15 +83,19 @@ class EpicGamesGames:
         cursor.close()
 
     @classmethod
-    def scrap_free_games(cls) -> List[Self]:
-        r = requests.get(
-            "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=fr-US&country=BE&allowCountries=BE"
-        )
-        if not r.ok:
-            raise Exception(
-                f"error during reception of the datas from epiceGames : {r.headers}"
+    def scrap_free_games(cls, http_stack: List[HttpRequest]|None=None) -> List[Self]:
+        # http_stack is only filled in debugging MODE
+        if http_stack:
+            r = http_stack.pop()
+        else:
+            r = requests.get(
+                "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=fr-US&country=BE&allowCountries=BE"
             )
-        HttpRequest.insert_http_request(r.text)
+            if not r.ok:
+                raise Exception(
+                    f"error during reception of the datas from epiceGames : {r.headers}"
+                )
+            HttpRequest.insert_http_request(r.text)
 
         free_games = []
         elements = json.loads(r.content)["data"]["Catalog"]["searchStore"]["elements"]

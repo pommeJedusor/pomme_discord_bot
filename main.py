@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 BOT_TOKEN = cast(str, os.getenv("TOKEN"))
+MODE = os.getenv("MODE") or "prod"
+print(f"MODE: {MODE}")
 if BOT_TOKEN is None:
     print("Please set the token")
     exit()
@@ -36,9 +38,12 @@ async def on_ready():
         await bot.load_extension("cogs.help.help")
         synced = await bot.tree.sync()
         print(f"synced {len(synced) } command(s)")
+        if MODE == "debug":
+            await debug()
     except Exception as e:
         print(e)
-    general_check.start()
+    if MODE != "debug":
+        general_check.start()
 
 
 async def epic_check() -> None:
@@ -99,6 +104,35 @@ async def epic_check() -> None:
     EpicGamesGames.add_games(current_free_games_title)
     EpicGamesGames.set_games_as_last(current_free_games_title)
 
+async def debug():
+    http_stack = HttpRequest.get_requests()
+    results = []
+    while http_stack:
+        results += EpicGamesGames.scrap_free_games(http_stack)
+    for serv in EpicGamesServer.get_valid_servers():
+        assert serv.channel_id != None
+        epic_channel = bot.get_channel(serv.channel_id)
+        if not isinstance(epic_channel, discord.TextChannel):
+            continue
+
+        for result in results:
+            title = result.title
+            # sometimes the description of the game is also the title
+            description = ""
+            if result.title != result.description:
+                description = result.description
+
+            embed = discord.Embed(
+                title=title,
+                description=description,
+                color=0x0000FF,
+                url=f"https://store.epicgames.com/fr/p/{result.slug}",
+            )
+            embed.set_image(url=result.img_link)
+            try:
+                await epic_channel.send(embed=embed)
+            except discord.errors.Forbidden:
+                pass
 
 times = [time(hour=i, minute=1, tzinfo=timezone.utc) for i in range(24)]
 @tasks.loop(time=times)
