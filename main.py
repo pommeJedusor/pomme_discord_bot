@@ -106,9 +106,13 @@ async def epic_check() -> None:
 
 async def debug():
     http_stack = HttpRequest.get_requests()
-    results = []
+    results = set()
+    dic = {}
     while http_stack:
-        results += EpicGamesGames.scrap_free_games(http_stack)
+        for game in EpicGamesGames.scrap_free_games(http_stack):
+            results.add(game.title)
+            dic[game.title] = game
+    results = [dic[result] for result in results]
     for serv in EpicGamesServer.get_valid_servers():
         assert serv.channel_id != None
         epic_channel = bot.get_channel(serv.channel_id)
